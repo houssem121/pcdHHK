@@ -2,7 +2,7 @@ import { Card, Form, Button, Message } from 'semantic-ui-react';
 import React from "react";
 import { useState } from 'react';
 import {ContractPatient} from '../Contract';
-import { useEffect } from 'react';
+import { useEffect } from 'react';//this is a comment
     const RegisterComp = (props) => {
         const [formData, setFormData] = useState({
             firstname: '',
