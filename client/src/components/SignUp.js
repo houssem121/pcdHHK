@@ -4,6 +4,7 @@ import { Form, Button, Card, Message } from 'semantic-ui-react';
 import AuthenticationHash from '../utils/AuthenticationHash';
 import "../App.css";
 import { useState } from 'react';
+import {SavePublicKey} from '../utils/localstorage';
 
 const SignUp = ({ contract, account, web3, accountCreated }) => {
     const [formData, setFormData] = useState({
@@ -15,6 +16,36 @@ const SignUp = ({ contract, account, web3, accountCreated }) => {
     const [alertMessage, setAlertMessage] = useState('');
     const [status, setStatus] = useState('');
     const [signedUp, setSignedUp] = useState(false);
+
+//call the server to genkey  
+async function callKeyGenServer(blockchainAddress) {
+    try {
+        const response = await fetch('http://localhost:8083/keygen', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                blockchain_address: blockchainAddress
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to call server');
+        }
+
+        const data = await response.json();
+        console.log('Server response:', data.public_key);
+        return data.public_key;
+    } catch (error) {
+        console.error('Error calling server:', error);
+    }
+}
+
+
+
+
+
 
     const onSignUp = async () => {
         const { username, password, Role, digicode } = formData;
@@ -49,10 +80,15 @@ const SignUp = ({ contract, account, web3, accountCreated }) => {
                 return;
             } else {
                 let hash = await AuthenticationHash(trimmedUsername, account, trimmedPassword, trimmedDigicode, web3);
-
-                await contract.methods.register(hash, trimmedRole).send({ from: account });
-
+                const pubkey = await callKeyGenServer(account);
+                await contract.methods.register(hash, trimmedRole,pubkey).send({ from: account });
+                console.log('public key:', pubkey);
+                await SavePublicKey(pubkey);
+                
+                
+                
                 setFormData({ username: '', password: '', Role: '', digicode: '' });
+                
                 setAlertMessage("Signup successful");
                 setStatus('success');
                 setSignedUp(true);

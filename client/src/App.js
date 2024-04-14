@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import web3Connection from './web3Connection';
-import {Contract} from './Contract';
+import { Contract } from './Contract';
 
 import 'semantic-ui-css/semantic.min.css'
 import { Menu, Divider } from "semantic-ui-react";
@@ -13,8 +13,9 @@ import UserAccount from './components/UserAccount';
 import Patient from './components/patient';
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button,Stack,Nav,Navbar,Container } from 'react-bootstrap';
+import { Button, Stack, Nav, Navbar, Container } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
+import { DeletePublickey } from "./utils/localstorage";
 
 
 
@@ -38,10 +39,12 @@ const App = () => {
         setWeb3(web3);
         setContract(contract);
         setAccount(accounts[0]);
-
+        console.log(accounts[0]);
         window.ethereum.on('accountsChanged', function (accounts) {
+          DeletePublickey();
           setAccount(accounts[0]);
           setLoggedIn(false);
+
         });
       } catch (error) {
         alert(`Failed to load web3, accounts, and contract.`);
@@ -57,10 +60,11 @@ const App = () => {
   const getAccount = async () => {
     if (web3 !== null || web3 !== undefined) {
       await window.ethereum.on('accountsChanged', async (accounts) => {
+        DeletePublickey();
         setAccount(accounts[0]);
         setLoggedIn(false);
 
-        
+
       });
     }
   }
@@ -84,7 +88,7 @@ const App = () => {
   return (
     <div className="main_page">
       <header>
-        
+
         <Navbar fixed="top" expand="lg" bg="dark" variant="dark">
           <Container>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -142,172 +146,6 @@ const App = () => {
       </header>
 
       <main >
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route path="/help">
-              Help page
-            </Route>
-            {loggedIn ?
-              <Route path="/user-account">
-                <UserAccount account={account} username={username} />
-              </Route>
-              :
-              <Route path="/user-account">
-                You have been logged out
-              </Route>
-            }
-            <Route path="/sign-in">
-              {loggedIn ?
-                <Redirect to='/user-account' />
-                :
-                <SignIn
-                  web3={web3}
-                  contract={contract}
-                  account={account}
-                  signedUp={signedUp}
-                  userSignedIn={setLoggedIn}
-                />
-              }
-            </Route>
-            <Route path="/sign-up">
-              <SignUp
-                web3={web3}
-                contract={contract}
-                account={account}
-                accountCreated={setSignedUp}
-              />
-            </Route>
-            <Route path="/sign-out">
-              {loggedIn ?
-                <SignOut loggedOut={setLoggedIn} />
-                :
-                <Redirect to="/sign-in" />
-              }
-            </Route>
-            <Route path="/patient">
-              <Patient 
-              web3={web3}
-              contract={contract}
-              account={account}
-              signedUp={signedUp}
-              userSignedIn={setLoggedIn}
-              
-              />
-            </Route>
-          </Switch>
-       
-      </main>
-      <footer style={
-        {
-          position: 'fixed',
-          left: '0',
-          bottom: '0',
-          width: '100%',
-          backgroundColor: 'black',
-          color: 'white',
-          textAlign: 'center'
-        }
-      
-      }>
-        <div className="footer">  
-          <p>© 2021 All rights reserved.</p>  
-
-              </div>
-
-      </footer>
-
-</div>
-  );
-}
-
-export default App;
-
-
-
-
-
-
-  /*return (
-    
-    <div className="App">
-      <BrowserRouter>
-        <Navbar fixed="top" expand="lg" bg="dark" variant="dark">
-          <Container>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto">
-                <Nav.Link
-                  name='home'
-                  active={activeItem === 'home'}
-                  onClick={(e) => handleItemClick(e, { name: 'home' })}
-                  as={Link}
-                  to='/'
-                >
-                  Home
-                </Nav.Link>
-                <Nav.Link
-                  name='help'
-                  active={activeItem === 'help'}
-                  onClick={(e) => handleItemClick(e, { name: 'help' })}
-                  as={Link}
-                  to='/help'
-                >
-                  Help
-                </Nav.Link>
-              </Nav>
-              <Nav>
-                {loggedIn &&
-                  <Nav.Link
-                    name='user account'
-                    active={activeItem === 'user account'}
-                    onClick={(e) => handleItemClick(e, { name: 'user account' })}
-                    as={Link}
-                    to='/user-account'
-                  >
-                    User Account
-                  </Nav.Link>
-                }
-                {!loggedIn &&
-                  <Nav.Link
-                    name='sign in'
-                    active={activeItem === 'sign in'}
-                    onClick={(e) => handleItemClick(e, { name: 'sign in' })}
-                    as={Link}
-                    to='/sign-in'
-                  >
-                    Sign In
-                  </Nav.Link>
-                }
-                {loggedIn ?
-                  <Nav.Link
-                    name='sign out'
-                    active={activeItem === 'sign out'}
-                    onClick={(e) => handleItemClick(e, { name: 'sign out' } )}
-                    as={Link}
-                    to='/sign-out'
-                  >
-                    Sign Out
-                  </Nav.Link>
-                  :
-                  <Nav.Link
-                    name='sign up'
-                    active={activeItem === 'sign up'}
-                    onClick={(e) => handleItemClick(e, { name: 'sign up' })}
-                    as={Link}
-                    to='/sign-up'
-                  >
-                    Sign Up
-                  </Nav.Link>
-                }
-              </Nav>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
-    
-      
-        
         <Switch>
           <Route exact path="/">
             <Home />
@@ -326,7 +164,7 @@ export default App;
           }
           <Route path="/sign-in">
             {loggedIn ?
-              <Redirect to='/user-account' />
+              <Redirect to='/patient' />
               :
               <SignIn
                 web3={web3}
@@ -353,12 +191,182 @@ export default App;
             }
           </Route>
           <Route path="/patient">
-            <Patient />
+            {!loggedIn ?
+              <Patient
+                web3={web3}
+                contract={contract}
+                account={account}
+              // signedUp={signedUp}
+              //userSignedIn={setLoggedIn}
+
+              />
+              :
+              <Redirect to="/sign-in" />
+            }
           </Route>
         </Switch>
-      </BrowserRouter>
+
+      </main>
+      <footer style={
+        {
+          position: 'fixed',
+          left: '0',
+          bottom: '0',
+          width: '100%',
+          backgroundColor: 'black',
+          color: 'white',
+          textAlign: 'center'
+        }
+
+      }>
+        <div className="footer">
+          <p>© 2021 All rights reserved.</p>
+
+        </div>
+
+      </footer>
+
     </div>
-  );*/
+  );
+}
+
+export default App;
+
+
+
+
+
+
+/*return (
+  
+  <div className="App">
+    <BrowserRouter>
+      <Navbar fixed="top" expand="lg" bg="dark" variant="dark">
+        <Container>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link
+                name='home'
+                active={activeItem === 'home'}
+                onClick={(e) => handleItemClick(e, { name: 'home' })}
+                as={Link}
+                to='/'
+              >
+                Home
+              </Nav.Link>
+              <Nav.Link
+                name='help'
+                active={activeItem === 'help'}
+                onClick={(e) => handleItemClick(e, { name: 'help' })}
+                as={Link}
+                to='/help'
+              >
+                Help
+              </Nav.Link>
+            </Nav>
+            <Nav>
+              {loggedIn &&
+                <Nav.Link
+                  name='user account'
+                  active={activeItem === 'user account'}
+                  onClick={(e) => handleItemClick(e, { name: 'user account' })}
+                  as={Link}
+                  to='/user-account'
+                >
+                  User Account
+                </Nav.Link>
+              }
+              {!loggedIn &&
+                <Nav.Link
+                  name='sign in'
+                  active={activeItem === 'sign in'}
+                  onClick={(e) => handleItemClick(e, { name: 'sign in' })}
+                  as={Link}
+                  to='/sign-in'
+                >
+                  Sign In
+                </Nav.Link>
+              }
+              {loggedIn ?
+                <Nav.Link
+                  name='sign out'
+                  active={activeItem === 'sign out'}
+                  onClick={(e) => handleItemClick(e, { name: 'sign out' } )}
+                  as={Link}
+                  to='/sign-out'
+                >
+                  Sign Out
+                </Nav.Link>
+                :
+                <Nav.Link
+                  name='sign up'
+                  active={activeItem === 'sign up'}
+                  onClick={(e) => handleItemClick(e, { name: 'sign up' })}
+                  as={Link}
+                  to='/sign-up'
+                >
+                  Sign Up
+                </Nav.Link>
+              }
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+  
+    
+      
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/help">
+          Help page
+        </Route>
+        {loggedIn ?
+          <Route path="/user-account">
+            <UserAccount account={account} username={username} />
+          </Route>
+          :
+          <Route path="/user-account">
+            You have been logged out
+          </Route>
+        }
+        <Route path="/sign-in">
+          {loggedIn ?
+            <Redirect to='/user-account' />
+            :
+            <SignIn
+              web3={web3}
+              contract={contract}
+              account={account}
+              signedUp={signedUp}
+              userSignedIn={setLoggedIn}
+            />
+          }
+        </Route>
+        <Route path="/sign-up">
+          <SignUp
+            web3={web3}
+            contract={contract}
+            account={account}
+            accountCreated={setSignedUp}
+          />
+        </Route>
+        <Route path="/sign-out">
+          {loggedIn ?
+            <SignOut loggedOut={setLoggedIn} />
+            :
+            <Redirect to="/sign-in" />
+          }
+        </Route>
+        <Route path="/patient">
+          <Patient />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  </div>
+);*/
 
 
 

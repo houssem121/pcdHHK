@@ -4,7 +4,8 @@ import img from '../img/background7.jpeg';
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button,Stack } from 'react-bootstrap';
-
+import AspectRatio from '@mui/joy/AspectRatio';
+import Typography from '@mui/joy/Typography';
 
 
 
@@ -13,7 +14,7 @@ const Home = () => {
   
         return (
             <div className='home-page'>
-           
+            
                 <Grid stackable columns={3} textAlign='left'>
                     <Grid.Row>
                         <Grid.Column width={8}>

@@ -4,11 +4,6 @@ import '../App.css';
 
 
 const UserAccount = (props) =>{
-
-
-    
-    
-   
         return (
             <div className='user-account'>
                 <Grid centered stackable>

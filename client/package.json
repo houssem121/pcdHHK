@@ -8,15 +8,18 @@
     "bootstrap": "^5.3.3",
     "dotenv": "^6.2.0",
     "ipfs-mini": "^1.1.5",
-    "react": "^16.14.0",
+    "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
-    "react-dom": "16.11.0",
+    "react-dom": "^18.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.2.0",
     "react-sidenav": "^4.0.6",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3",
-    "web3": "1.2.2"
+    "web3": "1.2.2",
+    "ag-grid-community": "~31.2.1",
+    "ag-grid-react": "~31.2.1"
+
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
