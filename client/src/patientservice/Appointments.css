@@ -1,0 +1,18 @@
+/* Appointments.css */
+
+.appointments-table {
+    margin: 20px;
+}
+
+.appointments-table th {
+    background-color: #007bff; /* Couleur de fond de l'en-tête */
+    color: white; /* Couleur du texte de l'en-tête */
+}
+
+.appointments-table td, .appointments-table th {
+    text-align: center; /* Centrage du texte dans les cellules */
+}
+
+.appointments-table .badge-primary {
+    background-color: #28a745; /* Couleur de fond du badge */
+}

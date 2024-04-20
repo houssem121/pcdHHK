@@ -10,6 +10,9 @@ import RegisterComp from '../patientservice/registercomp';
 import "../App.css";
 import DetailComp from '../patientservice/details';
 import Medicalfile from '../patientservice/medicalfile';
+import Appointments from '../patientservice/appointments';
+import Records from '../patientservice/seemedrecords';
+import UpdateFile from '../patientservice/updatefile';
 const SideNavBar = (props) => {
   
   return (
@@ -149,7 +152,44 @@ const SideNavBar = (props) => {
                
               />
             )} />
+            <Route path="/patient/appointments" render={(routeProps) => (
+              <Appointments {...routeProps} 
+              contractPatients={props.contractPatients}
+              isOpen={props.isOpen}
+              toggleSidebar={props.toggleSidebar}
+              web3={props.web3}
+              contract={props.contract}
+              account={props.account}
+              signedUp={props.signedUp}
+              userSignedIn={props.userSignedIn}
+              />
+              
+            )} />
+            <Route  path="/patient/records" render={(routeProps) => (
+              <Records {...routeProps} 
+              contractPatients={props.contractPatients}
+              isOpen={props.isOpen}
+              toggleSidebar={props.toggleSidebar}
+              web3={props.web3}
+              contract={props.contract}
+              account={props.account}
+              signedUp={props.signedUp}
+              userSignedIn={props.userSignedIn}
 
+              />  
+            )} />
+            <Route path="/patient/updatefil" render={(routeProps) => (
+              <UpdateFile {...routeProps}
+                contractPatients={props.contractPatients}
+                isOpen={props.isOpen}
+                toggleSidebar={props.toggleSidebar}
+                web3={props.web3}
+                contract={props.contract}
+                account={props.account}
+                signedUp={props.signedUp}
+                userSignedIn={props.userSignedIn} 
+              />
+            )} />
 
 
 

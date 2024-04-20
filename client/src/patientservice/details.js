@@ -3,6 +3,10 @@ import { Card, Table } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faMapMarkerAlt, faPhone, faFileMedicalAlt, faKey } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
+import Toast from 'react-bootstrap/Toast'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Button from 'react-bootstrap/Button'
 
 function DetailComp(props) {
     // Define a function to extract the desired part of the key from session storage
@@ -59,7 +63,7 @@ const extractKeyPart = () => {
     }, [props.contractPatients, props.account]);
 
     return (
-        <div style={{ paddingTop: '120px' }}>
+       <div style={{ paddingTop: '120px' }}>
 
             <Card>
                 <Card.Header style={{ backgroundColor: '#f8f9fa', borderBottom: '1px solid #dee2e6' }}>
@@ -117,7 +121,9 @@ const extractKeyPart = () => {
             </Card>
         </div>
 
+
     );
+   
 }
 
 export default DetailComp;
