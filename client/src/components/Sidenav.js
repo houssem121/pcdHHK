@@ -13,6 +13,7 @@ import Medicalfile from '../patientservice/medicalfile';
 import Appointments from '../patientservice/appointments';
 import Records from '../patientservice/seemedrecords';
 import UpdateFile from '../patientservice/updatefile';
+import Services from '../patientservice/services';
 const SideNavBar = (props) => {
   
   return (
@@ -190,6 +191,20 @@ const SideNavBar = (props) => {
                 userSignedIn={props.userSignedIn} 
               />
             )} />
+
+            <Route path="/patient/services" render={(routeProps) => (
+              <Services {...routeProps}
+                contractPatients={props.contractPatients}
+                isOpen={props.isOpen}
+                toggleSidebar={props.toggleSidebar}
+                web3={props.web3}
+                contract={props.contract}
+                account={props.account}
+                signedUp={props.signedUp}
+                userSignedIn={props.userSignedIn}   
+              />
+            )} />
+
 
 
 
