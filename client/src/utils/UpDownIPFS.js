@@ -82,7 +82,33 @@ const EncrypteFile = async (fileData, props) => {
   }
 };
 
+const generateReEncryptionKey = async (props,userpubkey,patientAddress,ProsanteAddress) => {
+/*type RequestAccess struct {
+	BlockchainAddress string `json:"blockchain_address"`
+	UserAddress       string `json:"user_address"`
+	UserPubkey        string `json:"user_pubkey"`
+} */
+  try {
+    const requestData = {
+      blockchain_address: patientAddress, // Replace 'add' with the actual blockchain address
+      user_address: ProsanteAddress,
+      user_pubkey: userpubkey
+    };
 
+    console.log('request data:', requestData);//get request
+    const response = await axios.post('http://localhost:8083/giveaccess', requestData);
+
+    const reEncryptionKey = response.data;
+    console.log('Re-Encryption Key:', reEncryptionKey);
+
+   
+  } catch (error) {
+    console.error('Error generating re-encryption key:', error);
+    throw error;
+  }
+
+
+}
 const DecrypteFile = async (fileData, capsule, props) => {
   try {
     const requestData = {
@@ -103,6 +129,51 @@ const DecrypteFile = async (fileData, capsule, props) => {
     throw error;
   }
 }
+const DecryptFileParSante = async (fileData, capsule, account,ProsanteAddress) => {
+  try {
+    /*type RenEncCipherText struct {
+	NewCapsule  RenEncCipher `json:"Capsule"`
+	TestCiphers []byte       `json:"TextCipher"`
+}
+type RenEncCipher struct {
+	PatientUser DeleteRequest   `json:"patient_user"`
+	CapsuleData json.RawMessage `json:"capsule_data"`
+}
+type DeleteRequest struct {
+	PatientAddress string `json:"patient_address"`
+	UserAddress    string `json:"user_address"`
+}
+ */
+    const RenEncCipherText = {
+      Capsule: {
+        patient_user: {
+          patient_address: account,
+          user_address: ProsanteAddress
+        },
+        capsule_data: capsule
+      },
+      TextCipher: fileData
+    };
+
+    console.log('request data:', RenEncCipherText);
+    const response = await axios.post('http://localhost:8084/DecryptCipher', RenEncCipherText);
+
+    const decryptedData = response.data;
+    console.log('Decrypted data:', decryptedData);
+
+    return decryptedData;
+
+  } catch (error) {
+    console.error('Error decrypting file:', error);
+    throw error;
+  }
+}
+
+
+
+
+
+
 function parseJSONWithLargeNumbers(jsonString) {
   // Regular expression to match scientific notation numbers
   const scientificNotationRegex = /(?<=\":)(-?\d+(\.\d*)?([eE][+\-]?\d+)?)(?=\s*[,\}\]])/g;
@@ -113,4 +184,4 @@ function parseJSONWithLargeNumbers(jsonString) {
   // Parse the JSON string
   return JSON.parse(fixedJSONString);
 }
-export { EncrypteFile, DecrypteFile, parseJSONWithLargeNumbers, handleFileUpload, handleFileUpdate };
+export { EncrypteFile, DecrypteFile, parseJSONWithLargeNumbers, handleFileUpload, handleFileUpdate ,generateReEncryptionKey,DecryptFileParSante};

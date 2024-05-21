@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import web3Connection from './web3Connection';
 import { Contract } from './Contract';
-
-import 'semantic-ui-css/semantic.min.css'
+import Docteur from "./components/docteur";
+import 'semantic-ui-css/semantic.min.css';
+import Pharmacien from "./components/pharmacien";
 import { Menu, Divider } from "semantic-ui-react";
 import { BrowserRouter, Switch, Route, Link, Redirect } from 'react-router-dom';
 import Home from './components/Home';
@@ -11,13 +12,14 @@ import SignIn from "./components/SignIn"
 import SignOut from "./components/SignOut";
 import UserAccount from './components/UserAccount';
 import Patient from './components/patient';
+import Assurance from './components/agentassurance';
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Stack, Nav, Navbar, Container } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { DeletePublickey } from "./utils/localstorage";
 
-
+  
 
 const App = () => {
   const [web3, setWeb3] = useState(null);
@@ -28,6 +30,7 @@ const App = () => {
   const [signedUp, setSignedUp] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -35,11 +38,13 @@ const App = () => {
         const web3 = await web3Connection();
         const contract = await Contract(web3);
         const accounts = await web3.eth.getAccounts();
-
+        const role = await contract.methods.getUser(accounts[0]).call();
+        setRole(role.role);
         setWeb3(web3);
         setContract(contract);
         setAccount(accounts[0]);
         console.log(accounts[0]);
+       
         window.ethereum.on('accountsChanged', function (accounts) {
           DeletePublickey();
           setAccount(accounts[0]);
@@ -85,26 +90,54 @@ const App = () => {
   if (!web3) {
     return <div>Loading Web3, accounts, and contract...</div>;
   }
+  const getUserRole = () => {
+    if (account === null) {
+      return null;
+    }
+    const role = contract.methods.getUser(account).call();
+    const r = role.role;
+    return r;
+  }
+
+  const renderRoleComponent = () => {
+    switch (role) {
+      case '0':
+        return <Redirect to="/patient/register" />;
+      case '1':
+        return <Redirect to="/docteur/register" />;
+      
+      case '3':
+        return <Redirect to="/pharmacien/register" />;
+ 
+      case '5':
+        return <Redirect to="/assurance/register" />;
+      default:
+        return <Redirect to="/" />;
+    }
+  };
   return (
     <div className="main_page">
       <header>
 
-        <Navbar fixed="top" expand="lg" bg="dark" variant="dark">
-          <Container>
+        <Navbar fixed="top" expand="lg" variant="dark" style={{ backgroundSize: "0", backgroundColor: "#3496ff" }}>
+          <Container  >
+
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto">
+              <Nav className="me-auto" >
                 <Link
                   className="nav-link"
                   to="/"
+                  style={{ color: '#fff' }}
                 >
-                  Home
+                  Accueil
                 </Link>
                 <Link
                   className="nav-link"
                   to="/help"
-                >
-                  Help
+                  style={{ color: '#fff' }}
+                >{/*en francais  */}
+                  Aide
                 </Link>
               </Nav>
               <Nav>
@@ -112,31 +145,35 @@ const App = () => {
                   <Link
                     className="nav-link"
                     to="/user-account"
+                    style={{ color: '#fff' }}
                   >
-                    User Account
+                    Compte utilisateur
                   </Link>
                 }
                 {!loggedIn &&
                   <Link
                     className="nav-link"
                     to="/sign-in"
+                    style={{ color: '#fff' }}
                   >
-                    Sign In
+                    S'identifier
                   </Link>
                 }
                 {loggedIn ?
                   <Link
                     className="nav-link"
                     to="/sign-out"
+                    style={{ color: '#fff' }}
                   >
-                    Sign Out
+                    Se déconnecter
                   </Link>
                   :
                   <Link
                     className="nav-link"
                     to="/sign-up"
+                    style={{ color: '#fff' }}
                   >
-                    Sign Up
+                    S'inscrire
                   </Link>
                 }
               </Nav>
@@ -159,13 +196,13 @@ const App = () => {
             </Route>
             :
             <Route path="/user-account">
-              You have been logged out
+              vous avez été déconnecté
             </Route>
           }
           <Route path="/sign-in">
-            {loggedIn ?
-              <Redirect to='/patient' />
-              :
+            {loggedIn ? (
+              renderRoleComponent()
+            ) : (
               <SignIn
                 web3={web3}
                 contract={contract}
@@ -173,7 +210,7 @@ const App = () => {
                 signedUp={signedUp}
                 userSignedIn={setLoggedIn}
               />
-            }
+            )}
           </Route>
           <Route path="/sign-up">
             <SignUp
@@ -184,30 +221,50 @@ const App = () => {
             />
           </Route>
           <Route path="/sign-out">
-            {loggedIn ?
+            {loggedIn ? (
               <SignOut loggedOut={setLoggedIn} />
-              :
+            ) : (
               <Redirect to="/sign-in" />
-            }
+            )}
           </Route>
           <Route path="/patient">
-            {!loggedIn ?
-              <Patient
-                web3={web3}
-                contract={contract}
-                account={account}
-              // signedUp={signedUp}
-              //userSignedIn={setLoggedIn}
-
-              />
-              :
+            {loggedIn ? (
+              <Patient web3={web3} contract={contract} account={account} />
+            ) : (
               <Redirect to="/sign-in" />
-            }
+            )}
           </Route>
+          <Route path="/assurance">
+            {loggedIn ? (
+              <Assurance web3={web3} contract={contract} account={account} />
+            ) : (
+              <Redirect to="/sign-in" />
+            )}
+          </Route>
+          <Route path="/docteur">
+            {loggedIn ? (
+              <Docteur web3={web3} contract={contract} account={account} />
+            ) : (
+              <Redirect to="/sign-in" />
+            )}
+          </Route>
+          <Route path="/pharmacien">
+            {loggedIn ? (
+              <Pharmacien web3={web3} contract={contract} account={account} />
+            ) : (
+              <Redirect to="/sign-in" />
+            )}
+          </Route>
+          
         </Switch>
-
       </main>
-      <footer style={
+    </div>
+  );
+};
+
+export default App;
+
+/*<footer style={
         {
           position: 'fixed',
           left: '0',
@@ -225,15 +282,7 @@ const App = () => {
         </div>
 
       </footer>
-
-    </div>
-  );
-}
-
-export default App;
-
-
-
+*/
 
 
 

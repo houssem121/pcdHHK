@@ -40,6 +40,7 @@ enum Role { patient, doctor, researcher, pharmacist, labAgent, insuranceemployee
     
     // Structure to represent a prescription
      struct Prescription {
+        uint id;
         uint timestamp;
         address doctor;
         address patient;

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import { useState } from 'react';
@@ -14,6 +14,7 @@ import Appointments from '../patientservice/appointments';
 import Records from '../patientservice/seemedrecords';
 import UpdateFile from '../patientservice/updatefile';
 import Services from '../patientservice/services';
+import Events from '../patientservice/events';
 const SideNavBar = (props) => {
   
   return (
@@ -30,6 +31,7 @@ const SideNavBar = (props) => {
             style={{
               display: 'block',
               paddingTop: '57px',
+              backgroundColor: '#60adff',
 
 
             }}
@@ -57,7 +59,7 @@ const SideNavBar = (props) => {
                   <FontAwesomeIcon icon={faFileMedicalAlt} style={{ fontSize: '1.75em' }} />
                 </NavIcon>
                 <NavText>
-                  medicalfile
+                  Dossiers médicaux
                 </NavText>
               </NavItem>
               <NavItem eventKey="events">
@@ -74,18 +76,10 @@ const SideNavBar = (props) => {
                     faCalendarCheck} style={{ fontSize: '1.75em' }} />
                 </NavIcon>
                 <NavText>
-                  appointments
+                  Rendez-vous
                 </NavText>
               </NavItem>
-              <NavItem eventKey="records">
-                <NavIcon>
-                  <FontAwesomeIcon icon={faPaperclip} style={{ fontSize: '1.75em' }} />
-
-                </NavIcon>
-                <NavText>
-                  records
-                </NavText>
-              </NavItem>
+         
               <NavItem eventKey="services">
                 <NavIcon>
                   <FontAwesomeIcon icon={faUserMd} style={{ fontSize: '1.75em' }} />
@@ -101,8 +95,8 @@ const SideNavBar = (props) => {
 
                 </NavIcon>
                 <NavText>
-                  Update medicalfile
-                </NavText>
+                    Mise à jour du dossier
+                  </NavText>
               </NavItem>
 
 
@@ -204,6 +198,19 @@ const SideNavBar = (props) => {
                 userSignedIn={props.userSignedIn}   
               />
             )} />
+            <Route path="/patient/events" render={(routeProps) => (
+             <Events {...routeProps}
+              contractPatients={props.contractPatients}
+              isOpen={props.isOpen}
+              toggleSidebar={props.toggleSidebar}
+              web3={props.web3}
+              contract={props.contract}
+              account={props.account}
+              signedUp={props.signedUp}
+              userSignedIn={props.userSignedIn}
+              />
+            )} />
+
 
 
 

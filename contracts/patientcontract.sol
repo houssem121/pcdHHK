@@ -26,8 +26,7 @@ struct Patient {
 }
 
 
-
-
+event patientadded(address indexed patient, string firstname,string lastname,uint age);
 
 mapping(address => Patient) public patients;
 
@@ -41,7 +40,8 @@ function registerUserDetails( string memory _firstname,string memory _lastname,u
         patient.dossierHash = _dossierHash;
         patient.location=location;
         patient.phone=phone;
-        
+
+        emit patientadded(msg.sender,_firstname,_lastname,_age);
 
        
 }
@@ -75,6 +75,35 @@ function getRecordById(address _patient, uint _id) public view returns (Authenti
 function printpatientrecord(address _patient, uint i) public view returns (Authentication.Prescription memory) {
     return patients[_patient].record[i].treatment;
 }
+/* // Function to validate the purchase of a prescription
+    function validatePrescriptionPurchase(address _patient, uint256 _recordid) public {
+        // Check that the user is a pharmacist
+        require(getUser().role == Authentication.Role.pharmacist, "Only pharmacists can validate prescription purchases");
+
+        // Update the state of the prescription
+        patientInstance.addPrescriptionResultToPatient(msg.sender ,_patient, _recordid, true);
+
+        // Emit an event to signal the validation of the purchase
+        emit PrescriptionPurchaseValidated(_patient, _recordid);
+    } */
+
+function addPrescriptionResultToPatient(address _user,address _patient, uint _id, bool _result) public onlyAuthorizedUser(_user,_patient) {//patient contract
+    Authentication.MedicalRecord memory medicalRecord = getRecordById(_patient, _id);
+
+    // Update the prescription purchase status in the medical record
+    medicalRecord.treatment.fullyPurchased = _result;
+
+    // Optionally, emit an event or perform any additional logic
+
+    // Update the medical record in the patient's records array
+    for (uint i = 0; i < patients[_patient].record.length; i++) {
+        if (patients[_patient].record[i].id == _id) {
+            patients[_patient].record[i] = medicalRecord;
+            break; // Break the loop once the medical record is updated
+        }
+    }
+}
+
 
 
 
@@ -184,38 +213,39 @@ function visualiserProchainsRendezVous() public view returns (Authentication.App
 }
 
 
-// Événement pour notifier l'achat d'une ordonnance
-event OrdonnanceAchete(address indexed patient,uint256 recordId ,uint256 timestamp);
 
+// Événement pour notifier l'achat d'une ordonnance
+event OrdonnanceAchete(address indexed patient, uint256 recordId, uint256 timestamp,string firstname,string lastname,address indexed pharmacieaddress);
 // Fonction pour notifier l'achat d'une ordonnance par le pharmacien
-function notifierAchatOrdonnance(address _patient,uint256 recordId) public {
+function notifierAchatOrdonnance(address _patient, uint256 recordId,address pharmachieaddress) external {
     // Autres vérifications éventuelles...
 
     // Émettre un événement pour notifier l'achat de l'ordonnance
-    emit OrdonnanceAchete(_patient,recordId,block.timestamp);
+    emit OrdonnanceAchete(_patient, recordId, block.timestamp,patients[_patient].firstname,patients[_patient].lastname,pharmachieaddress);
 }
 
 // Événement pour notifier la visite chez le médecin
-event VisiteMedecinEffectuee(address indexed patient, address indexed doctor, uint256 timestamp);
+event VisiteMedecinEffectuee(address indexed patient, address indexed doctor, uint256 timestamp,string firstname,string lastname);
 
 // Fonction pour notifier la visite chez le médecin
-function notifierVisiteMedecin(address _patient, address _doctor) public {
+function notifierVisiteMedecin(address _patient, address _doctor) external {
     // Autres vérifications éventuelles...
 
     // Émettre un événement pour notifier la visite chez le médecin
-    emit VisiteMedecinEffectuee(_patient, _doctor, block.timestamp);
+    emit VisiteMedecinEffectuee(_patient, _doctor, block.timestamp,patients[_patient].firstname,patients[_patient].lastname);    
 }
 
 // Événement pour notifier la demande de remboursement
-event RemboursementDemande(address indexed patient,uint256 recordId  ,string service, uint256 timestamp);
+event RemboursementDemande(address indexed patient, uint256 recordId, string service, uint256 timestamp);
 
 // Fonction pour notifier la demande de remboursement d'un service
-function notifierDemandeRemboursement(address _patient,uint256 recordId ,string memory _service) public {//i will add prescription id here 
+function notifierDemandeRemboursement(address _patient, uint256 recordId, string memory _service) external {//i will add prescription id here 
     // Autres vérifications éventuelles...
 
     // Émettre un événement pour notifier la demande de remboursement
-    emit RemboursementDemande(_patient,recordId,_service, block.timestamp);
+    emit RemboursementDemande(_patient, recordId, _service, block.timestamp);
 }
+
 }
 
 

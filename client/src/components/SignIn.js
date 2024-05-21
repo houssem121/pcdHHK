@@ -74,7 +74,8 @@ const SignIn = (props) => {
 
     return (
         <div className="sign-up">
-            Sign in to your account
+            {/*en francais  */}
+            Connectez-vous à votre compte
             <div className='signup-form'>
                 <Card fluid centered>
                     <Card.Content>
@@ -116,10 +117,21 @@ const SignIn = (props) => {
                                     onChange={e => setDigicode(e.target.value)}
                                 />
                             </Form.Field>
-                            <Form.Field>
+                            <Form.Field 
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '1rem'
+                            }}
+                            
+                            >
                                 <Button type='button' primary fluid size='large' onClick={onSignIn}>
-                                    Sign in
+                                    Se connecter
                                 </Button>
+                                <Button type='reset' variant='danger' size='large' color='red' >
+                                Effacer
+                                </Button>
+
                             </Form.Field>
                         </Form>
                     </Card.Content>
@@ -127,7 +139,7 @@ const SignIn = (props) => {
                 {
                     props.signedUp ? null :
                         <div className="signin-onUp">
-                            Don't have an account? <Link to='/sign-up'>Sign up</Link>
+                            Vous n'avez pas de compte? <Link to='/sign-up'>S'inscrire</Link>
                         </div>
                 }
             </div>

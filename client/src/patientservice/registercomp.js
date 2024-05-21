@@ -1,7 +1,6 @@
 import { Card, Form, Button, Message } from 'semantic-ui-react';
-import React from "react";
-import { useState } from 'react';
-
+import React, { useState } from "react";
+import './Appointments.css';
 const RegisterComp = (props) => {
     const [formData, setFormData] = useState({
         firstname: '',
@@ -13,81 +12,45 @@ const RegisterComp = (props) => {
     });
     const [alertMessage, setAlertMessage] = useState('');
     const [status, setStatus] = useState('');
-    /* const [contractPatients, setContractPatients] = useState(null);
-     useEffect(() => {
-         const initContract = async () => {
-             const contractPatients = await ContractPatient(props.web3);
-             setContractPatients(contractPatients);
-         };
-         initContract();
-     }, [props.web3]);*/
-
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-
-
-
-
-
 
     const onSignUps = async () => {
         setAlertMessage('');
         setStatus('');
         try {
             await props.contractPatients.methods.registerUserDetails(formData.firstname, formData.lastname, formData.age, formData.dossierHash, formData.location, formData.phone).send({ from: props.account });
-
-            setAlertMessage('User details saved successfully');
+            setAlertMessage('Détails du patient enregistrés avec succès');
             setStatus('success');
         } catch (error) {
             setAlertMessage(error.message);
             setStatus('failed');
         }
     };
-    /*   const onclikk = async () => {
-           setAlertMessage('');
-           setStatus('');
-       
-           try {
-               // Call the function
-               await contractPatients.methods.demanderemboursement().send({ from: props.account });
-       
-               // Subscribe to the event
-               contractPatients.events.ReimbursementRequested({}, (error, event) => {
-                   if (error) {
-                       console.error("Error in event subscription:", error);
-                   } else {
-                       console.log("Event received:", event);
-                       // Process the event data here
-                       setAlertMessage('Reimbursement requested successfully');
-                       setStatus('success');
-                   }
-               });
-           } catch (error) {
-               setAlertMessage(error.message);
-               setStatus('failed');
-           }
-       };*/ //events testing 
+
     return (
-        <div className="save-up">
-            Save Patient details
+        <div className="register-comp">
+            <h2 className="register-title">Enregistrer les détails du patient</h2>
             <div className='signup-form'>
-                <Card fluid centered>
+                <Card fluid centered className='signup-card'>
                     <Card.Content>
-                        <Form size='large'>
+                        <Form size='large' style={{
+                              
+                                gap: '0.4rem'
+                            }}>
                             {alertMessage && (
                                 <Message negative={status === 'failed'} positive={status === 'success'}>
                                     {alertMessage}
                                 </Message>
                             )}
-                            {/* Input for firstname, lastname, etc. */}
                             <Form.Field>
                                 <input
                                     required
                                     type='text'
                                     name='firstname'
-                                    placeholder='First Name'
+                                    placeholder='Prénom'
                                     value={formData.firstname}
                                     onChange={handleChange}
                                 />
@@ -97,7 +60,7 @@ const RegisterComp = (props) => {
                                     required
                                     type='text'
                                     name='lastname'
-                                    placeholder='Last Name'
+                                    placeholder='Nom de famille'
                                     value={formData.lastname}
                                     onChange={handleChange}
                                 />
@@ -107,18 +70,17 @@ const RegisterComp = (props) => {
                                     required
                                     type='number'
                                     name='age'
-                                    placeholder='Age'
+                                    placeholder='Âge'
                                     value={formData.age}
                                     onChange={handleChange}
                                 />
                             </Form.Field>
-
                             <Form.Field>
                                 <input
                                     required
                                     type='text'
                                     name='dossierHash'
-                                    placeholder='Dossier Hash'
+                                    placeholder='Hash du dossier'
                                     value={formData.dossierHash}
                                     onChange={handleChange}
                                 />
@@ -128,7 +90,7 @@ const RegisterComp = (props) => {
                                     required
                                     type='text'
                                     name='location'
-                                    placeholder='Location'
+                                    placeholder='Emplacement'
                                     value={formData.location}
                                     onChange={handleChange}
                                 />
@@ -138,19 +100,20 @@ const RegisterComp = (props) => {
                                     required
                                     type='text'
                                     name='phone'
-                                    placeholder='Phone'
+                                    placeholder='Téléphone'
                                     value={formData.phone}
                                     onChange={handleChange}
                                 />
                             </Form.Field>
                             <Button type='submit' primary fluid size='large' onClick={onSignUps}>
-                                Save User Details
+                                Enregistrer les détails du patient
                             </Button>
-
+                            <Button type='reset' variant='danger' size='lg' color='red' >
+                                    Reset
+                                </Button>
                         </Form>
                     </Card.Content>
                 </Card>
-
             </div>
         </div>
     );

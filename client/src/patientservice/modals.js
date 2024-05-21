@@ -44,7 +44,6 @@ const Modals = (props) => {
                                         </li>
                                     ))}
                                 </ul>
-                                <strong>Test:</strong> {record.test.done ? `Effectué le ${record.test.date}. Catégorie: ${record.test.category}, Résultat: ${record.test.result}` : 'Non effectué'}
                             </ListGroup.Item>
                         ))}
                     </ListGroup>

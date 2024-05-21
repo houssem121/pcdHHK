@@ -10,11 +10,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 // Render your app within the context of BrowserRouter
 root.render(
-    <React.StrictMode>
+    
         <BrowserRouter>
             <App />
         </BrowserRouter>
-    </React.StrictMode>
+    
 );
 
 // Unregister the service worker

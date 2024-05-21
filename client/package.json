@@ -5,6 +5,8 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@truffle/hdwallet-provider": "^1.4.1",
+    "ag-grid-community": "~31.2.1",
+    "ag-grid-react": "~31.2.1",
     "bootstrap": "^5.3.3",
     "dotenv": "^6.2.0",
     "ipfs-mini": "^1.1.5",
@@ -14,12 +16,10 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.2.0",
     "react-sidenav": "^4.0.6",
+    "react-toastify": "^10.0.5",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3",
-    "web3": "1.2.2",
-    "ag-grid-community": "~31.2.1",
-    "ag-grid-react": "~31.2.1"
-
+    "web3": "1.2.2"
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",

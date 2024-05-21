@@ -85,6 +85,7 @@ const Records = (props) => {
     };
 
     return (
+        
         <Accordion className="records-accordion">
             {patient.record.map((record, index) => (
                 <Accordion.Item key={index} eventKey={index.toString()}>
